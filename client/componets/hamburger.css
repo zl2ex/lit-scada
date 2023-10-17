@@ -1,0 +1,31 @@
+
+
+
+.nav
+{
+    width: 40px;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+    gap: 10px;
+    background-color: var(--var-color-neutral-300);
+    padding: 10px;
+
+    .hamburger
+    {
+        width: 40px;
+        stroke: var(--var-color-neutral-900);
+        visibility: visible;
+    }
+
+    .navItem
+    {
+        margin: 0;
+    }
+
+    .menuItem:hover
+    {
+        background-color: var(--var-color-neutral-100);
+    }
+}

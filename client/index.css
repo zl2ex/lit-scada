@@ -1,0 +1,88 @@
+/* You can add global styles to this file, and also import other style files */
+
+
+*
+{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root
+{
+    font-family: sans-serif;
+    font-size: 16px;
+
+    --var-text-color: #ffffff;
+
+    --var-color-neutral-000: #000000;
+    --var-color-neutral-100: #101010;
+    --var-color-neutral-200: #202020;
+    --var-color-neutral-300: #303030;
+    --var-color-neutral-400: #505050;
+    --var-color-neutral-500: #707070;
+
+
+    --var-color-neutral-600: #909090;
+    --var-color-neutral-700: #a0a0a0;
+    --var-color-neutral-800: #c0c0c0;
+    --var-color-neutral-900: #ffffff;
+
+    --zl2ex-color-state-off: var(--var-color-neutral-300);
+    --zl2ex-color-state-on: #00ff00;
+    --zl2ex-color-state-warn: #ffd900;
+    --zl2ex-color-state-fault: #ff0000;
+    --zl2ex-color-stroke: #000;
+
+    --var-color-primary-000: hsl(209, 95%, 16%);
+    --var-color-primary-100: hsl(209, 86%, 25%);
+    --var-color-primary-200: hsl(209, 80%, 28%);
+    --var-color-primary-300: hsl(209, 74%, 32%);
+    --var-color-primary-400: hsl(209, 63%, 44%);
+    --var-color-primary-500: hsl(209, 56%, 49%);
+    --var-color-primary-600: hsl(209, 59%, 54%);
+    --var-color-primary-700: hsl(209, 76%, 65%);
+    --var-color-primary-800: hsl(209, 74%, 71%);
+    --var-color-primary-900: hsl(209, 81%, 79%);
+
+    --var-color-secondary-000: hsl(190, 95%, 16%);
+    --var-color-secondary-100: hsl(190, 86%, 25%);
+    --var-color-secondary-200: hsl(190, 80%, 28%);
+    --var-color-secondary-300: hsl(190, 74%, 32%);
+    --var-color-secondary-400: hsl(190, 63%, 44%);
+    --var-color-secondary-500: hsl(190, 56%, 49%);
+    --var-color-secondary-600: hsl(190, 59%, 54%);
+    --var-color-secondary-700: hsl(190, 76%, 65%);
+    --var-color-secondary-800: hsl(190, 74%, 71%);
+    --var-color-secondary-900: hsl(190, 81%, 79%);
+
+
+    --var-color-info-1: #ff00ff;
+    --var-color-info-2: #965096;
+    --var-color-info-3: #00ff80;
+    --var-color-info-4: #6ab361;
+    --var-color-info-5: #00ffdd;
+
+}
+
+body
+{
+    color: var(--var-text-color);
+    min-height: 100svh;
+}
+
+.app-root
+{
+    min-height: 100svh;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    background-color: var(--var-color-neutral-400);
+}
+
+outlet
+{
+    display: flex;
+    flex: 1 0 0;
+    height: 100%;
+}
