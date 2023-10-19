@@ -3,9 +3,19 @@
   "version": "1.0.0",
   "description": "zl2exScadaServer",
   "main": "server.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "devStart": "nodemon server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.9.4",
+    "express": "^4.18.2",
+    "graphql": "^16.8.1",
+    "mongoose": "^7.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
 }

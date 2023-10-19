@@ -11,7 +11,7 @@ import './componets/zl2exNavItem.js';
 import './pages/zl2exPageHome.js';
 import './pages/zl2exPage404.js';
 
-
+// load pages that arent required to render /
 async function loadPages()
 {
     await import('./pages/zl2exPageAbout.js');
@@ -27,6 +27,7 @@ router.setRoutes([
     {path: '/tag-editor', component: 'zl2ex-page-tag-editor'},
     {path: '(.*)', component: 'zl2ex-page-404'}
 ]);
+
 
 
 

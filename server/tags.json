@@ -1,0 +1,20 @@
+{
+    "aprt01": {
+        "name": "aprt01",
+        "type": "bool",
+        "value": true,
+        "fault": false,
+        "opcPath": "OPC[dev].h1",
+        "timeStamp": 1697654378
+    },
+
+    "aprt02": {
+        "name": "aprt02",
+        "type": "float",
+        "value": false,
+        "fault": true,
+        "opcPath": "OPC[dev].h1",
+        "timeStamp": 1697654378
+    }
+
+}
