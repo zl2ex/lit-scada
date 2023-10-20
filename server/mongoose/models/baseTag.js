@@ -7,7 +7,8 @@ const baseTagOptions = {
 
 const BaseTagSchema = new Schema(
     {
-        name: String,
+        _id: String,
+        value: Object,
         dataType: String,
         group: String,
         enabled: Boolean,

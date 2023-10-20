@@ -1,27 +1,91 @@
-import express from 'express';
 import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
 import { startStandaloneServer } from '@apollo/server/standalone';
+import { composeMongoose } from 'graphql-compose-mongoose';
+import { schemaComposer } from 'graphql-compose';
 
-import { DigitalIn } from './mongoose/models/digitalInTag.js';
+import { OPCUAServer, Variant, DataType, StatusCodes} from 'node-opcua';
+
+import { DigitalInTag } from './mongoose/models/digitalInTag.js';
+import { BaseTag } from './mongoose/models/baseTag.js';
 
  
-const MONGODB = 'mongodb://localhost:27017/demoProject';
+const MONGODB = 'mongodb://localhost/demoProject';
 
-mongoose.connect(MONGODB, {
+await mongoose.connect(MONGODB, {
   useNewUrlParser: true
 });
 
 
+////////////////////////////////OPCUA server/////////////////////////////////
 
-const app = express();
+const opcuaServer = new OPCUAServer({
+    port: 4334,
+    resourcePath: "/DemoProject"
+});
+
+await opcuaServer.initialize();
+console.log("OPC UA Server initalised");
 
 
-let tag = new DigitalIn(
+const opcuaAddressSpace = opcuaServer.engine.addressSpace;
+const opcuaNamespace = opcuaAddressSpace.getOwnNamespace();
+
+
+const demoDevice = opcuaNamespace.addObject({
+    organizedBy: opcuaAddressSpace.rootFolder.objects,
+    browseName: "demoDevice"
+});
+
+let demoVarible = 12.345;
+setInterval(() => {  demoVarible+=1.23; }, 500);
+
+opcuaNamespace.addVariable({
+    componentOf: demoDevice,
+    browseName: "demoVarible",
+    dataType: "Double",
+    minimumSamplingInterval: 1234, // we need to specify a minimumSamplingInterval when using a getter
+    value: {
+        get:  () => new Variant({dataType: DataType.Double, value: demoVarible })
+    }
+});
+
+// add a variable named MyVariable2 to the newly created folder "MyDevice"
+let variable2 = 10.0;
+
+opcuaNamespace.addVariable({
+    componentOf: demoDevice,
+    nodeId: "ns=1;b=1020FFAA", // some opaque NodeId in namespace 4
+    browseName: "varible2",
+    dataType: "Double",    
+    minimumSamplingInterval: 1234, // we need to specify a minimumSamplingInterval when using a getter
+    value: {
+        get: () => new Variant({dataType: DataType.Double, value: variable2 }),
+        set: (variant) => {
+            variable2 = parseFloat(variant.value);
+            return StatusCodes.Good;
+        }
+    }
+});
+
+
+opcuaServer.start(function() {
+    console.log("opcua Server is now listening ... ( press CTRL+C to stop)");
+    console.log("port ", opcuaServer.endpoints[0].port);
+});
+
+const endpointUrl = opcuaServer.endpoints[0].endpointDescriptions()[0].endpointUrl;
+console.log(" the primary server endpoint url is ", endpointUrl );
+
+///////////////////////////////////////////////////////////////////////////////
+
+let tag = new BaseTag(
     {
-        value: true,
-        fault: true,
-        name: "aprt03",
+        _id: "attx03",
+        value: {
+            value: true,
+            fault: false
+        },
         dataType: "DigitalIn",
         group: "default",
         enabled: true,
@@ -30,39 +94,71 @@ let tag = new DigitalIn(
         writePermissions: 0,
         sampleTimeMs: 1000,
         alarms: {},
-        history: {enabled: false, minLogTimeS: 10, maxLogTimeS: 30},
+        history: 
+        {
+            enabled: false, 
+            minLogTimeS: 10, 
+            maxLogTimeS: 30
+        },
         unit: "",
         timeStamp: Date.now()
     }
 );
 
 console.log(tag);
-await tag.save();
+try 
+{
+    await tag.save();
+} 
+catch (error) 
+{
+    console.log(error);
+}
 
 
-// The GraphQL schema
-const typeDefs = `#graphql
-  type Query {
-    hello: String
-  }
-`;
 
-// A map of functions which return data for the schema.
-const resolvers = {
-  Query: {
-    hello: () => 'world',
-  },
-};
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
+const schemaComposerOptions = {};
+const DigitalInTC = composeMongoose(BaseTag, schemaComposerOptions);
+
+// STEP 3: ADD NEEDED CRUD digitalIn OPERATIONS TO THE GraphQL SCHEMA
+// via graphql-compose it will be much much easier, with less typing
+schemaComposer.Query.addFields({
+  digitalInById: DigitalInTC.mongooseResolvers.findById(),
+  digitalInByIds: DigitalInTC.mongooseResolvers.findByIds(),
+  digitalInOne: DigitalInTC.mongooseResolvers.findOne(),
+  digitalInMany: DigitalInTC.mongooseResolvers.findMany(),
+  digitalInDataLoader: DigitalInTC.mongooseResolvers.dataLoader(),
+  digitalInDataLoaderMany: DigitalInTC.mongooseResolvers.dataLoaderMany(),
+  digitalInByIdLean: DigitalInTC.mongooseResolvers.findById({ lean: true }),
+  digitalInByIdsLean: DigitalInTC.mongooseResolvers.findByIds({ lean: true }),
+  digitalInOneLean: DigitalInTC.mongooseResolvers.findOne({ lean: true }),
+  digitalInManyLean: DigitalInTC.mongooseResolvers.findMany({ lean: true }),
+  digitalInDataLoaderLean: DigitalInTC.mongooseResolvers.dataLoader({ lean: true }),
+  digitalInDataLoaderManyLean: DigitalInTC.mongooseResolvers.dataLoaderMany({ lean: true }),
+  digitalInCount: DigitalInTC.mongooseResolvers.count(),
+  digitalInConnection: DigitalInTC.mongooseResolvers.connection(),
+  digitalInPagination: DigitalInTC.mongooseResolvers.pagination(),
 });
 
-const { url } = await startStandaloneServer(server);
-console.log(`🚀 Appollo server ready at ${url}`);
+schemaComposer.Mutation.addFields({
+  digitalInCreateOne: DigitalInTC.mongooseResolvers.createOne(),
+  digitalInCreateMany: DigitalInTC.mongooseResolvers.createMany(),
+  digitalInUpdateById: DigitalInTC.mongooseResolvers.updateById(),
+  digitalInUpdateOne: DigitalInTC.mongooseResolvers.updateOne(),
+  digitalInUpdateMany: DigitalInTC.mongooseResolvers.updateMany(),
+  digitalInRemoveById: DigitalInTC.mongooseResolvers.removeById(),
+  digitalInRemoveOne: DigitalInTC.mongooseResolvers.removeOne(),
+  digitalInRemoveMany: DigitalInTC.mongooseResolvers.removeMany(),
+});
 
-/*
-app.listen({ port: 4000 });
-console.log('Listening to port 4000');
-*/
+
+const graphqlSchema = schemaComposer.buildSchema();
+
+
+const apolloServer = new ApolloServer({schema: graphqlSchema});
+
+const { url } = await startStandaloneServer(apolloServer);
+console.log(`Appollo server up at ${url}`);
+
+
