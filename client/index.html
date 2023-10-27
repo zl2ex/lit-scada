@@ -7,13 +7,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <link rel="icon" type="image/x-icon" href="favicon.ico"/>
   <link rel="stylesheet" type="text/css" href="index.css"/> 
+  <script type="module" src="index.js"></script>
 </head>
 <body>
   <app-root class="app-root">
+    <apollo-client uri="http://localhost:5000/graphql">
       <header>
         <zl2ex-header-nav navId="nav">
           <nav slot="nav">
             <zl2ex-nav-item href="/">Home</zl2ex-nav-item>
+            <zl2ex-nav-item href="/login">Login</zl2ex-nav-item>
             <zl2ex-nav-item href="/about">About</zl2ex-nav-item>
             <zl2ex-nav-item href="/tag-editor">Tag Editor</zl2ex-nav-item>
             <zl2ex-nav-item href="/trending">Trending</zl2ex-nav-item>
@@ -21,9 +24,9 @@
         </zl2ex-header-nav>
       </header>
       <div id="outlet"></div>
+    </apollo-client>
   </app-root>
 </body>
 
-<script type="module" src="index.js"></script>
 
 </html>

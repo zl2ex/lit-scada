@@ -32,18 +32,19 @@
     --zl2ex-color-state-on: #00ff00;
     --zl2ex-color-state-warn: #ffd900;
     --zl2ex-color-state-fault: #ff0000;
+    --zl2ex-color-state-error: oklch(40.1% 0.123 21.57);
     --zl2ex-color-stroke: #000;
 
-    --var-color-primary-000: hsl(209, 95%, 16%);
-    --var-color-primary-100: hsl(209, 86%, 25%);
-    --var-color-primary-200: hsl(209, 80%, 28%);
-    --var-color-primary-300: hsl(209, 74%, 32%);
-    --var-color-primary-400: hsl(209, 63%, 44%);
-    --var-color-primary-500: hsl(209, 56%, 49%);
-    --var-color-primary-600: hsl(209, 59%, 54%);
-    --var-color-primary-700: hsl(209, 76%, 65%);
-    --var-color-primary-800: hsl(209, 74%, 71%);
-    --var-color-primary-900: hsl(209, 81%, 79%);
+    --var-color-primary-000: hsl(283, 95%, 16%);
+    --var-color-primary-100: hsl(283, 86%, 25%);
+    --var-color-primary-200: hsl(283, 80%, 28%);
+    --var-color-primary-300: hsl(283, 74%, 32%);
+    --var-color-primary-400: hsl(283, 63%, 44%);
+    --var-color-primary-500: hsl(283, 56%, 49%);
+    --var-color-primary-600: hsl(283, 59%, 54%);
+    --var-color-primary-700: hsl(283, 76%, 65%);
+    --var-color-primary-800: hsl(283, 74%, 71%);
+    --var-color-primary-900: hsl(283, 81%, 79%);
 
     --var-color-secondary-000: hsl(190, 95%, 16%);
     --var-color-secondary-100: hsl(190, 86%, 25%);
@@ -62,6 +63,16 @@
     --var-color-info-3: #00ff80;
     --var-color-info-4: #6ab361;
     --var-color-info-5: #00ffdd;
+
+
+
+
+
+    /* hover active focus state varibles */
+
+    --zl2ex-hover-brightness: 0.9;
+    --zl2ex-active-brightness: 0.8;
+    --zl2ex-focus-brightness: 0.9;
 
 }
 

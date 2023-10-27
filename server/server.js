@@ -1,24 +1,72 @@
 import mongoose from 'mongoose';
 import { ApolloServer } from '@apollo/server';
-import { startStandaloneServer } from '@apollo/server/standalone';
-import { composeMongoose } from 'graphql-compose-mongoose';
-import { schemaComposer } from 'graphql-compose';
-
 import { OPCUAServer, Variant, DataType, StatusCodes} from 'node-opcua';
+
+import express from 'express';
+import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
+import cors from 'cors';
+import { expressMiddleware } from '@apollo/server/express4';
+import { buildSubgraphSchema } from '@apollo/subgraph';
+
+import { verifyToken } from './auth/jwt.js';
+import { typeDefs, resolvers } from './graphql/schema/index.js';
+
 
 import { DigitalInTag } from './mongoose/models/digitalInTag.js';
 import { BaseTag } from './mongoose/models/baseTag.js';
 
- 
-const MONGODB = 'mongodb://localhost/demoProject';
+dotenv.config();
 
-await mongoose.connect(MONGODB, {
+
+///////////////////////////////////MONGOOSE////////////////////////////////
+
+await mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true
 });
 
 
-////////////////////////////////OPCUA server/////////////////////////////////
+let tag = new BaseTag(
+    {
+        _id: "attx03",
+        value: {
+            value: true,
+            fault: false
+        },
+        dataType: "DigitalIn",
+        group: "default",
+        enabled: true,
+        opcPath: "OPC[default].hr1",
+        readOnly: false,
+        writePermissions: 0,
+        sampleTimeMs: 1000,
+        alarms: {},
+        history: 
+        {
+            enabled: false, 
+            minLogTimeS: 10, 
+            maxLogTimeS: 30
+        },
+        unit: "",
+        timeStamp: Date.now()
+    }
+);
 
+console.log(tag);
+try 
+{
+    await tag.save();
+} 
+catch (error) 
+{
+    console.log(error);
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////OPCUA server/////////////////////////////////
+/*
 const opcuaServer = new OPCUAServer({
     port: 4334,
     resourcePath: "/DemoProject"
@@ -76,47 +124,13 @@ opcuaServer.start(function() {
 
 const endpointUrl = opcuaServer.endpoints[0].endpointDescriptions()[0].endpointUrl;
 console.log(" the primary server endpoint url is ", endpointUrl );
-
+*/
 ///////////////////////////////////////////////////////////////////////////////
 
-let tag = new BaseTag(
-    {
-        _id: "attx03",
-        value: {
-            value: true,
-            fault: false
-        },
-        dataType: "DigitalIn",
-        group: "default",
-        enabled: true,
-        opcPath: "OPC[default].hr1",
-        readOnly: false,
-        writePermissions: 0,
-        sampleTimeMs: 1000,
-        alarms: {},
-        history: 
-        {
-            enabled: false, 
-            minLogTimeS: 10, 
-            maxLogTimeS: 30
-        },
-        unit: "",
-        timeStamp: Date.now()
-    }
-);
 
-console.log(tag);
-try 
-{
-    await tag.save();
-} 
-catch (error) 
-{
-    console.log(error);
-}
+////////////////////////////////////////////////////////////////
 
-
-
+/*
 
 const schemaComposerOptions = {};
 const DigitalInTC = composeMongoose(BaseTag, schemaComposerOptions);
@@ -154,11 +168,23 @@ schemaComposer.Mutation.addFields({
 
 
 const graphqlSchema = schemaComposer.buildSchema();
+*/
 
 
-const apolloServer = new ApolloServer({schema: graphqlSchema});
+const app = express();
 
-const { url } = await startStandaloneServer(apolloServer);
-console.log(`Appollo server up at ${url}`);
+app.use(cors());
+app.use(express.json());
+app.use(verifyToken);
 
+const apolloServer = new ApolloServer({ 
+    schema: buildSubgraphSchema({ typeDefs, resolvers })
+});
 
+await apolloServer.start();
+
+app.use('/graphql', expressMiddleware(apolloServer));
+
+app.listen(process.env.PORT, () => {
+    console.log('express server is running on ' + process.env.PORT);
+});

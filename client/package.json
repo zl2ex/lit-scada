@@ -6,11 +6,14 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "web-dev-server --node-resolve --app-index ./index.html --open --watch"
+    "devStart": "web-dev-server --node-resolve --app-index ./index.html --open --watch",
+    "start": "http-server --cors -o /login"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@apollo-elements/components": "^3.0.5",
+    "@apollo-elements/core": "^2.1.2",
     "@dile/dile-graph": "^3.0.4",
     "@dile/dile-hamburger": "^4.0.4",
     "@dile/dile-input": "^2.1.0",
@@ -19,7 +22,13 @@
     "@dile/dile-selector": "^2.1.3",
     "@dile/dile-spinner": "^2.0.6",
     "@doubletrade/lit-datatable": "^2.0.0",
+    "@google-web-components/google-chart": "^5.0.5",
     "@vaadin/router": "^1.7.5",
+    "chartjs-web-components": "^2.8.0",
+    "google-chart": "^0.0.1-security",
+    "graphql-tag": "^2.12.6",
+    "http-server": "^14.1.1",
+    "jwt-decode": "^3.1.2",
     "lit": "^2.8.0"
   },
   "devDependencies": {
