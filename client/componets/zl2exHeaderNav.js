@@ -8,22 +8,23 @@ export class zl2exHeaderNav extends LitElement
     static properties = 
     {
         pageName: {type: Boolean},
-        navOpen: {type: Boolean},
+        navOpen: {type: Boolean}
     };
 
     static styles = css`
 
-    *{
+    *
+    {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
     }
-
-    :root
+/* TD WIP 
+    *:focus
     {
-        --zl2ex-header-nav
+        outline: 1px solid var(--var-color-primary-700);
     }
-    
+    */
     dile-menu-hamburger
     {
         --dile-hamburger-color: var(--var-color-neutral-900);
@@ -34,17 +35,10 @@ export class zl2exHeaderNav extends LitElement
         --dile-hamburger-padding-x: 15px;
     }
 
-    dile-menu-hamburger:focus, 
-    dile-menu-hamburger:active,
-    dile-menu-hamburger:hover
-    {
-        background-color: var(--var-color-neutral-200);
-    }           
-
     dile-nav
     {
         --dile-nav-background-color: var(--var-color-neutral-300);
-        --dile-nav-color: var(--var-text-color);
+        --dile-nav-color: inherit;
         --dile-nav-padding-y: 1rem;
         --dile-nav-padding-x: 1rem;
         --dile-nav-column-gap: 1rem;
@@ -80,7 +74,7 @@ export class zl2exHeaderNav extends LitElement
 
     async firstUpdated()
     {
-
+        
     }
 
     render()
@@ -93,7 +87,9 @@ export class zl2exHeaderNav extends LitElement
                         <slot name="nav" slot="menu" class="menu"></slot>
                     </dile-menu-hamburger>
                 </div>
-                <span slot="actions">Create</span>
+                <span slot="actions">
+                    User 
+                </span>
                 <svg class="settings" viewBox="0 0 60 40">
                 <g stroke-width="4">
                     <circle cx="20%" cy="50%" r="4px"></circle>

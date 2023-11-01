@@ -75,13 +75,23 @@ export class zl2exPageHome extends LitElement
                 <h1>HOME</h1>
 
                 <div class="hmi zl2ex">
-                    <zl2ex-digital-in 
-                        ?value=${this.tags.aprt01.value}
-                        ?fault=${this.tags.aprt01.fault}
+                    <zl2ex-digital-in
+                        tagName="aprs01"
+                        text="DI">
+                        <p slot="label">name</p>
+                    </zl2ex-digital-in>
+                    <zl2ex-digital-in
+                        tagName="aprs02"
+                        text="DI">
+                        <p slot="label">name</p>
+                    </zl2ex-digital-in>
+                    <zl2ex-digital-in
+                        tagName="aprs03"
                         text="DI">
                         <p slot="label">name</p>
                     </zl2ex-digital-in>
                 </div>
+                
 
             </div>
         `;

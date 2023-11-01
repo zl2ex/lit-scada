@@ -1,7 +1,18 @@
 import {html, css, LitElement} from 'lit';
-import { ApolloQueryController } from '@apollo-elements/core';
+import { ApolloQueryController, ApolloMutationController } from '@apollo-elements/core';
 import { gql } from "graphql-tag";
 
+
+const registerMutation = gql`
+    mutation CreateUser($userInput: UserInput!) {
+        createUser(userInput: $userInput) {
+            _id
+            username
+            email
+            password
+        }
+    }
+`;
 
 const loginQuery = gql`
     query Login($email: String!, $password: String!) {
@@ -12,12 +23,13 @@ const loginQuery = gql`
 `;
 
 
-export class zl2exPageLogin extends LitElement
+export class zl2exPageRegister extends LitElement
 {
     
 
     static properties = 
     {
+        mutation: Object,
         query: Object,
         errorMessage: String
     };
@@ -65,8 +77,7 @@ export class zl2exPageLogin extends LitElement
         outline: 1px solid var(--var-color-primary-700);
     }
 
-    button,
-    a
+    button
     {
         text-decoration: none;
         color: inherit;
@@ -93,11 +104,6 @@ export class zl2exPageLogin extends LitElement
         background-color: var(--var-color-primary-400);
     }
 
-    .btn-secondary
-    {
-        background-color: var(--var-color-secondary-400);
-    }
-
     `;
 
     
@@ -105,6 +111,7 @@ export class zl2exPageLogin extends LitElement
     constructor()
     {
         super();
+        this.mutation = new ApolloMutationController(this, registerMutation);
         this.query = new ApolloQueryController(this, loginQuery);
         this.errorMessage = "";
     }
@@ -116,6 +123,7 @@ export class zl2exPageLogin extends LitElement
 
     updated()
     {
+        this.domUsername = this.shadowRoot.querySelector("#username");
         this.domEmail = this.shadowRoot.querySelector("#email");
         this.domPassword = this.shadowRoot.querySelector("#password");
     }
@@ -131,9 +139,12 @@ export class zl2exPageLogin extends LitElement
         }
         catch(e)
         {
-            this.errorMessage = e.graphQLErrors[0].message;
+            console.log(e);
+            this.errorMessage = "Login failed";
             return;
         }
+
+        console.log(this.query.data.login.token);
 
         if(this.query.data) 
         {
@@ -142,11 +153,33 @@ export class zl2exPageLogin extends LitElement
         }
     }
 
+    async register()
+    {
+        try
+        {
+            await this.mutation.mutate({ variables: {
+                userInput: {
+                    username: this.domUsername.value,
+                    email: this.domEmail.value,
+                    password: this.domPassword.value
+                }
+            }}); 
+        }
+        catch(e)
+        {
+            this.errorMessage = e.graphQLErrors[0].message;
+            localStorage.removeItem("token"); // just in case
+            return;
+        }
+
+        this.login(); // login the newly created user
+    }
+
     keyPress(event)
     {
         if(event.keyCode === 13) // enter
         {
-            this.login();
+            this.register();
         }
     }
 
@@ -155,12 +188,12 @@ export class zl2exPageLogin extends LitElement
     {
         return html`
             <div class="container">
-                    <h1>Login</h1>
+                    <h1>Register</h1>
+                    <label for="username">Username</label><input id="username" type="text" @keypress=${this.keyPress}/>
                     <label for="email">Email</label><input id="email" type="email" @keypress=${this.keyPress}/>
                     <label for="password">Password</label><input id="password" type="password" @keypress=${this.keyPress}/>
                     <div class="actions">
-                        <button id="login" type="button" class="btn-primary" @click=${this.login}>Login</button>
-                        <a class="btn-secondary" href="/register">Register</a>
+                        <button id="login" type="button" class="btn-primary" @click=${this.register}>Register</button>
                     </div>
                     <p>${this.errorMessage}</p>
             </div>
@@ -168,4 +201,4 @@ export class zl2exPageLogin extends LitElement
     }
 }
 
-customElements.define("zl2ex-page-login", zl2exPageLogin);
+customElements.define("zl2ex-page-register", zl2exPageRegister);

@@ -4,17 +4,12 @@ import { OPCUAServer, Variant, DataType, StatusCodes} from 'node-opcua';
 
 import express from 'express';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { expressMiddleware } from '@apollo/server/express4';
 import { buildSubgraphSchema } from '@apollo/subgraph';
 
 import { verifyToken } from './auth/jwt.js';
 import { typeDefs, resolvers } from './graphql/schema/index.js';
-
-
-import { DigitalInTag } from './mongoose/models/digitalInTag.js';
-import { BaseTag } from './mongoose/models/baseTag.js';
 
 dotenv.config();
 
@@ -25,7 +20,7 @@ await mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true
 });
 
-
+/*
 let tag = new BaseTag(
     {
         _id: "attx03",
@@ -61,7 +56,7 @@ catch (error)
 {
     console.log(error);
 }
-
+*/
 ///////////////////////////////////////////////////////////////////////////
 
 

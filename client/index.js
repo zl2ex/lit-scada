@@ -1,5 +1,9 @@
 import {Router} from '@vaadin/router';
-import jwtDecode from 'jwt-decode';
+
+import {checkUserSession} from './auth/user.js';
+
+//redirect to login page if no user JWT is avalible or valid
+checkUserSession();
 
 //apollo
 import '@apollo-elements/components/apollo-client';
@@ -13,6 +17,7 @@ import './componets/zl2exNavItem.js';
 
 //pages
 import './pages/zl2exPageLogin.js';
+import './pages/zl2exPageRegister.js';
 import './pages/zl2exPageHome.js';
 import './pages/zl2exPage404.js';
 
@@ -30,6 +35,7 @@ export const router = new Router(document.querySelector("#outlet"));
 router.setRoutes([
     {path: '/', component: 'zl2ex-page-home'},
     {path: '/login', component: 'zl2ex-page-login'},
+    {path: '/register', component: 'zl2ex-page-register'},
     {path: '/about', component: 'zl2ex-page-about'},
     {path: '/tag-editor', component: 'zl2ex-page-tag-editor'},
     {path: '/trending', component: 'zl2ex-page-trending'},
@@ -37,38 +43,3 @@ router.setRoutes([
 ]);
 
 /*NAV*********************************************************/
-
-
-const root = {
-    user: null,
-    props: null
-};
-
-function checkUserSession()
-{
-    let loggedOut = true;
-    const token = localStorage.getItem("token");
-    
-    if(token)
-    {
-        const decodedToken = jwtDecode(token);
-
-        if(decodedToken.exp * 1000 < Date.now())
-        {
-            localStorage.removeItem("token");
-        }
-        else // token has not expired
-        {
-            root.user = decodedToken;
-            console.log("user already logged in" + root.user);
-            loggedOut = false;
-        }
-    }
-
-    if(loggedOut && window.location.href.includes("/login") == false)
-    {
-        window.location.href = "/login";
-    }   
-}
-
-checkUserSession();

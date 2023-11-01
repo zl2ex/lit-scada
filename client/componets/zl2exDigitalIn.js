@@ -1,19 +1,30 @@
 import {html, css, LitElement} from 'lit';
-import { zl2exTag } from './zl2exTag';
+import { ApolloQueryController } from '@apollo-elements/core';
+import { gql } from "graphql-tag";
+
+
+const tagQuery = gql`   
+    query GetTag($id: String!) {
+        getTag(_id: $id) {
+            data
+        }
+    }
+`;
+
 
 export class zl2exDigitalIn extends LitElement
 {
     static properties = 
     {
-        tagName: {type: String},
-        value: {type: Boolean}, 
-        fault: {type: Boolean},
-        text: {type: String}
+        tagName: String,
+        text: String,
+        query: Object
     };
 
     static styles = css`
 
-    *{
+    *
+    {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
@@ -54,19 +65,38 @@ export class zl2exDigitalIn extends LitElement
     constructor()
     {
         super();
+        this.query = new ApolloQueryController(this, tagQuery);
+        this.errorMessage = "";
     }
 
-    /*
-    slottedChildren(slotName, selectorName) 
+    async queryTagData()
     {
-        const slot = this.shadowRoot.querySelector('slot');
-        return slot.assignedElements({slot: slotName, selector: selectorName, flatten: true});
+        try
+        {
+            await this.query.executeQuery({ variables: { id: this.tagName }});
+        }
+        catch(e)
+        {
+            this.errorMessage = e;
+        }
+
+        if(this.query.data)
+        {
+            this.setFillColor();
+        }
+        console.log("poll");
+        // poll for data every second
+        setTimeout(() => { this.queryTagData() }, 1000);
     }
-*/
+
     firstUpdated()
     {
+        this.queryTagData();
+    }
+
+    updated()
+    {
         this.svg = this.shadowRoot.querySelector("svg");
-        this.setFillColor();
     }
 
     setFillColor()
@@ -76,15 +106,14 @@ export class zl2exDigitalIn extends LitElement
 
         //put higher priority colors at the bottom as they will be overidden
 
-        if(this.value) color = "var(--zl2ex-digital-in-color-on)";
-        if(this.fault) color = "var(--zl2ex-digital-in-color-fault)";
+        if(this.query.data.getTag.data.value) color = "var(--zl2ex-digital-in-color-on)";
+        if(this.query.data.getTag.data.fault) color = "var(--zl2ex-digital-in-color-fault)";
 
         this.svg.style.fill = color;
     }
 
     render()
     {
-        this.setFillColor();
         return html`
         <p>${this.tagName}</p>
         <svg viewBox="0 0 300 300" width="30px" height="30px">

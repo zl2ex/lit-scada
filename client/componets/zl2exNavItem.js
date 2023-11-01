@@ -11,8 +11,6 @@ export class zl2exNavItem extends LitElement
 
     *
     {
-        margin: 0;
-        padding: 0;
         box-sizing: border-box;
     }
 
@@ -22,16 +20,20 @@ export class zl2exNavItem extends LitElement
         flex: 0;
         text-decoration: none;
         color: var(--var-text-color);
-        background-color: inherit;
+        background-color: var(--var-color-neutral-300);
         font-size: 1rem;
         padding: 0.5rem;
         cursor: pointer;
-    }
 
-    a:hover, a:focus, a:active
-    {
-        background-color: var(--var-color-neutral-200);
-        outline: none;
+        &:hover
+        {
+            filter: brightness(var(--zl2ex-hover-brightness));
+        }
+
+        &:active
+        {
+            filter: brightness(var(--zl2ex-active-brightness));
+        }
     }
 
     .selected

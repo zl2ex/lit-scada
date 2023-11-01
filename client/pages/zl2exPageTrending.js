@@ -30,17 +30,7 @@ export class zl2exPageTrending extends LitElement
         display: flex;
         flex-direction: column;
         flex: 1 0 0;
-        background-color: red;
     }
-
-    .hmi
-    {
-        position: ablsolute;
-        display: flex;
-        flex: 1 0 0;
-        background-color: blue;
-    }
-   
     `;
 
     constructor()
@@ -61,12 +51,11 @@ export class zl2exPageTrending extends LitElement
             }
         };
 
-        this.chartData = {
-
-        };
+        this.chartData = `[["tag", "aprt01"], ["aprt01", 31]]`
+        ;
 
         this.chartOptions = {
-
+            
         };
     }
 
@@ -81,8 +70,7 @@ export class zl2exPageTrending extends LitElement
         return html`
             <div class="container">
                 <h1>Trending</h1>
-                <google-chart data='[["Month", "Days"], ["Jan", 31]]'></google-chart>
-                <base-chart id="chart" type="chartType" .data="${this.chartData}" .options="${this.chartOptions}"></base-chart>
+                <google-chart data=${this.chartData}></google-chart>
 
             </div>
         `;

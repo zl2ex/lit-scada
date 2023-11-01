@@ -32,7 +32,7 @@
     --zl2ex-color-state-on: #00ff00;
     --zl2ex-color-state-warn: #ffd900;
     --zl2ex-color-state-fault: #ff0000;
-    --zl2ex-color-state-error: oklch(40.1% 0.123 21.57);
+    --zl2ex-color-state-error: oklch(40.1% 0.223 25.57);
     --zl2ex-color-stroke: #000;
 
     --var-color-primary-000: hsl(283, 95%, 16%);
@@ -79,6 +79,7 @@
 body
 {
     color: var(--var-text-color);
+    background-color: var(--var-color-neutral-300);
     min-height: 100svh;
 }
 
@@ -88,10 +89,9 @@ body
     display: flex;
     flex-direction: column;
     flex-grow: 1;
-    background-color: var(--var-color-neutral-400);
 }
 
-outlet
+#outlet
 {
     display: flex;
     flex: 1 0 0;

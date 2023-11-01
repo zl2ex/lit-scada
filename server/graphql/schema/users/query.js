@@ -1,8 +1,10 @@
-import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+import { GraphQLError } from 'graphql';
 
 import { private_key } from '../../../auth/key.js';
 import { UserDB } from './db.js';
+
 
 export const UserQuery = 
 {
@@ -13,18 +15,18 @@ export const UserQuery =
             const user = await UserDB.findOne({ email });
             if (!user) 
             {
-                throw new Error('Invalid Credentials');
+                throw new GraphQLError('Invalid Credentials');
             }
 
             const isCorrectPassword = await bcrypt.compare(password, user.password);
             if (!isCorrectPassword) 
             {
-                throw new Error("Invalid Credentials");
+                throw new GraphQLError("Invalid Credentials");
             }
 
             const token = jwt.sign({ _id: user._id, email: user.email }, private_key, {
                 algorithm: "RS256",
-                expiresIn: "1m"
+                expiresIn: "2h"
             });
 
             return {
